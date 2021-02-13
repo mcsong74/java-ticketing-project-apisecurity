@@ -2,7 +2,6 @@ package com.cybertek.exception;
 
 import com.cybertek.dto.DefaultExceptionMessageDto;
 import com.cybertek.entity.ResponseWrapper;
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -22,8 +21,8 @@ import java.util.Optional;
 public class ExceptionMessageHandler {
     //building custom exception
 
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ResponseWrapper> serviceException(ServiceException se){
+    @ExceptionHandler(TicketingProjectException.class)
+    public ResponseEntity<ResponseWrapper> serviceException(TicketingProjectException se){
         String message = se.getMessage();
 
         return new ResponseEntity<>(ResponseWrapper.builder()
@@ -66,7 +65,7 @@ public class ExceptionMessageHandler {
     }
     //getting a message from annotation and returns the message
     private Optional<DefaultExceptionMessageDto> getMessageFromAnnotation(Method method) {
-        com.cybertek.annotation.DefaultExceptionMessage defaultExceptionMessage =
+        com.cybertek.annotation.DefaultExceptionMessage  defaultExceptionMessage =
                 method.getAnnotation(com.cybertek.annotation.DefaultExceptionMessage.class);
         if (defaultExceptionMessage != null) {
             DefaultExceptionMessageDto defaultExceptionMessageDto = DefaultExceptionMessageDto
