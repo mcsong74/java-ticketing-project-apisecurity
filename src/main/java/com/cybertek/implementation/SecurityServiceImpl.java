@@ -2,7 +2,9 @@ package com.cybertek.implementation;
 
 import com.cybertek.dto.UserDTO;
 import com.cybertek.entity.User;
+import com.cybertek.entity.common.UserPrincipal;
 import com.cybertek.mapper.MapperUtil;
+import com.cybertek.repository.UserRepository;
 import com.cybertek.service.SecurityService;
 import com.cybertek.service.UserService;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,17 +41,20 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public User loadUser(String value) {
-        UserDTO user = userService.findByUserName(value);
-
-        return mapperUtil.convert(user, new User());
+    public User loadUser(String param) {
+        UserDTO user =  userService.findByUserName(param);
+        return mapperUtil.convert(user,new User());
     }
 
     private Collection<? extends GrantedAuthority> listAuthorities(UserDTO user){
         List<GrantedAuthority> authorityList = new ArrayList<>();
+
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getDescription());
         authorityList.add(authority);
+
         return authorityList;
+
+
     }
 
 }

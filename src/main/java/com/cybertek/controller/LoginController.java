@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 public class LoginController {
 
@@ -39,9 +40,8 @@ public class LoginController {
 		String password = authenticationRequest.getPassword();
 		String username = authenticationRequest.getUsername();
 
-		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
-				password);
-		authenticationManager.authenticate(authenticationToken);
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
+		authenticationManager.authenticate(authentication);
 
 		//create a token
 		UserDTO foundUser = userService.findByUserName(username);

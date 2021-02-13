@@ -22,13 +22,12 @@ public class JWTUtil {
     public String generateToken(User user){
         // generating payload for Token
         //in spring, payload called claims. only for the payload
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("username", user.getUserName());
-        claims.put("id", user.getId());
-        claims.put("firstName", user.getFirstName());
-        claims.put("lastName", user.getLastName());
-
-        return createToken(claims, user.getUserName());
+        Map<String,Object> claims = new HashMap<>();
+        claims.put("username",user.getUserName());
+        claims.put("id",user.getId());
+        claims.put("firstName",user.getFirstName());
+        claims.put("lastName",user.getLastName());
+        return createToken(claims,user.getUserName());
 
     }
     //create Token return encoded Token string

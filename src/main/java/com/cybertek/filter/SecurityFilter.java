@@ -1,3 +1,4 @@
+
 package com.cybertek.filter;
 
 import com.cybertek.entity.User;
@@ -18,8 +19,10 @@ import java.io.IOException;
 
 @Service
 public class SecurityFilter extends OncePerRequestFilter {
+
     private final JWTUtil jwtUtil;
     private final SecurityService securityService;
+
     public SecurityFilter(JWTUtil jwtUtil, SecurityService securityService) {
         this.jwtUtil = jwtUtil;
         this.securityService = securityService;
