@@ -19,6 +19,7 @@ public interface UserService {
     List<UserDTO> listAllByRole(String role);
 
     Boolean checkIfUserCanBeDeleted(User user);
-    
+
+    UserDTO confirm(User user);
 
 }
