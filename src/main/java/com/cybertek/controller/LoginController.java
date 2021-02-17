@@ -75,7 +75,9 @@ public class LoginController {
 
 		UserDTO createUser =userService.save(userDTO);
 
-		return null;
+		sendEmail(createEmail(createUser));
+
+		return ResponseEntity.ok(new ResponseWrapper("User has been created", createUser));
 
 	}
 
@@ -94,5 +96,14 @@ public class LoginController {
 				.build();
 	}
 
+	private void sendEmail(MailDTO mailDTO){
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setTo(mailDTO.getEmailTo());
+		mailMessage.setSubject(mailDTO.getSubject());
+		mailMessage.setText(mailDTO.getMessage() + mailDTO.getUrl() + mailDTO.getToken());
+
+		confirmationTokenService.sendEmail(mailMessage);
+
+	}
 
 }
