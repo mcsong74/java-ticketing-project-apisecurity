@@ -1,10 +1,12 @@
 package com.cybertek.implementation;
 
 import com.cybertek.entity.ConfirmationToken;
+import com.cybertek.exception.TicketingProjectException;
 import com.cybertek.repository.ConfirmationTokenRepository;
 import com.cybertek.service.ConfirmationTokenService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,21 +21,30 @@ public class ConfirmationTokenServiceImpl implements ConfirmationTokenService {
 
     @Override
     public ConfirmationToken save(ConfirmationToken confirmationToken) {
-        return null;
+        return confirmationTokenRepository.save(confirmationToken);
     }
 
     @Override
+    @Async // won't hold if there're heavy traffic
     public void sendEmail(SimpleMailMessage email) {
-
+        javaMailSender.send(email);
     }
 
     @Override
-    public ConfirmationToken readByToken(String token) {
-        return null;
+    public ConfirmationToken readByToken(String token) throws TicketingProjectException {
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findByToken(token).orElse(null);
+        if (confirmationToken==null){
+            throw new TicketingProjectException("This token does not exists!");
+        }
+        if(!confirmationToken.isTokenValid(confirmationToken.getExpireDate())){
+            throw new TicketingProjectException("This token has been expired!");
+        }
+        return confirmationToken;
     }
 
     @Override
     public void delete(ConfirmationToken confirmationToken) {
-
+        confirmationToken.setIsDeleted(true);
+        confirmationTokenRepository.save(confirmationToken);
     }
 }

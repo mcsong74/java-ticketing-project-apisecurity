@@ -7,6 +7,7 @@ import com.cybertek.entity.User;
 import com.cybertek.entity.common.AuthenticationRequest;
 import com.cybertek.exception.TicketingProjectException;
 import com.cybertek.mapper.MapperUtil;
+import com.cybertek.service.ConfirmationTokenService;
 import com.cybertek.service.UserService;
 import com.cybertek.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,13 +28,16 @@ public class LoginController {
 	private UserService userService;
 	private MapperUtil mapperUtil;
 	private JWTUtil jwtUtil;
+	private ConfirmationTokenService confirmationTokenService;
 
-	public LoginController(AuthenticationManager authenticationManager, UserService userService, MapperUtil mapperUtil, JWTUtil jwtUtil) {
+	public LoginController(AuthenticationManager authenticationManager, UserService userService, MapperUtil mapperUtil, JWTUtil jwtUtil, ConfirmationTokenService confirmationTokenService) {
 		this.authenticationManager = authenticationManager;
 		this.userService = userService;
 		this.mapperUtil = mapperUtil;
 		this.jwtUtil = jwtUtil;
+		this.confirmationTokenService = confirmationTokenService;
 	}
+
 	@PostMapping("/authenticate")
 	@DefaultExceptionMessage(defaultMessage = "Bad Credential")
 	public ResponseEntity<ResponseWrapper> doLogin(@RequestBody AuthenticationRequest authenticationRequest) throws TicketingProjectException {
@@ -54,6 +58,17 @@ public class LoginController {
 		String jwtToken = jwtUtil.generateToken(convertedUser);
 
 		return ResponseEntity.ok(new ResponseWrapper("Login Successful", jwtToken));
+
+	}
+
+	@DefaultExceptionMessage(defaultMessage = "Something went wrong in email confirmation, try again!")
+	@PostMapping("/create-user")
+	@Operation(summary = "Create new account")
+	private ResponseEntity<ResponseWrapper> doRegister(@RequestBody UserDTO userDTO){
+
+		UserDTO createUser =userService.save(userDTO);
+
+		sendEmail(createEmail)
 
 	}
 
