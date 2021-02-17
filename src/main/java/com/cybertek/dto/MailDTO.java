@@ -12,9 +12,11 @@ public class MailDTO {
     private String emailTo;
     private String emailFrom;
     private String message;
-    private String token;
+    private String token; //not jwt token, a unique token to confirm in email and one time use only token
     private String subject;
-    private String url;
+    private String url; //url link user to click on in the email.
+
+
 
 
 }
