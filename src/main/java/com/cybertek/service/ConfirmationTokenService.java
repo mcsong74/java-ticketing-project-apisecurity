@@ -13,6 +13,7 @@ public interface ConfirmationTokenService {
 
     ConfirmationToken readByToken(String token);
 
+    void delete(ConfirmationToken confirmationToken);
 
 
 }
