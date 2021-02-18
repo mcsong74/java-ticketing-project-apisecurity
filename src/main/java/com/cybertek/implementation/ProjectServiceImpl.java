@@ -97,9 +97,9 @@ public class ProjectServiceImpl implements ProjectService {
             throw new TicketingProjectException("Project does not exist!");
         }
         project.setProjectStatus(Status.COMPLETE);
-        projectRepository.save(project);
+        Project completedProject = projectRepository.save(project);
 
-        return mapperUtil.convert(project, new ProjectDTO());
+        return mapperUtil.convert(completedProject, new ProjectDTO());
 
     }
 
