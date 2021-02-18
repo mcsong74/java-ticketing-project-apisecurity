@@ -7,6 +7,7 @@ import com.cybertek.dto.TaskDTO;
 import com.cybertek.dto.UserDTO;
 import com.cybertek.entity.ResponseWrapper;
 import com.cybertek.enums.Status;
+import com.cybertek.exception.TicketingProjectException;
 import com.cybertek.service.ProjectService;
 import com.cybertek.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,6 +56,15 @@ public class ProjectController {
         return ResponseEntity.ok(new ResponseWrapper("Project is retrieved", projectDTO));
     }
 
+    @PostMapping
+    @Operation(summary = "Create a project")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong creating project, try again!")
+    @PreAuthorize("hasAnyAuthority('Admin',  'Manager')")
+    public ResponseEntity<ResponseWrapper> create(@RequestBody ProjectDTO projectDTO) throws TicketingProjectException {
+
+        projectService.save(projectDTO);
+        return ResponseEntity.ok(new ResponseWrapper("Project is retrieved", projectDTO));
+    }
 
 
 
