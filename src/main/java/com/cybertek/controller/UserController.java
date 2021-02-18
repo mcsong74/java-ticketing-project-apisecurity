@@ -72,14 +72,22 @@ public class UserController {
 
     @GetMapping("/{username}")
     @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
-    @Operation(summary = "Read a User")
-    //only admin should see other profiles or current user can see his/her profile
+    @Operation(summary = "Read User")
+    // TODO : only admin should see other profiles or current user can see his/her profile
     public ResponseEntity<ResponseWrapper> readByUserName(@PathVariable("username") String username){
         UserDTO user = userService.findByUserName(username);
         return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved user!", user));
 
     }
 
+    @PutMapping
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong updating user profile, try again!")
+    @Operation(summary = "Update User")
+    public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user){
+        UserDTO updatedUser = userService.update(user);
+
+        return ResponseEntity.ok(new ResponseWrapper("Successfully user updated!", updatedUser));
+    }
 
 
 
