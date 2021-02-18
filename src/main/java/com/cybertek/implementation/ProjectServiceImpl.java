@@ -61,30 +61,46 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void update(ProjectDTO dto) {
+    public ProjectDTO update(ProjectDTO dto) throws TicketingProjectException {
         Project project = projectRepository.findByProjectCode(dto.getProjectCode());
+        if (project == null){
+            throw new TicketingProjectException("Project does not exist");
+        }
         Project convertedProject = mapperUtil.convert(dto, new Project());
         convertedProject.setId(project.getId());
         convertedProject.setProjectStatus(project.getProjectStatus());
-        projectRepository.save(convertedProject);
+        Project updatedProject = projectRepository.save(convertedProject);
+        return mapperUtil.convert(updatedProject, new ProjectDTO());
+
+
     }
 
     @Override
-    public void delete(String code) {
+    public void delete(String code) throws TicketingProjectException {
         Project project = projectRepository.findByProjectCode(code);
+        if (project == null){
+            throw new TicketingProjectException("Project does not exists!");
+        }
         project.setIsDeleted(true);
 
         project.setProjectCode(project.getProjectCode() +  "-" + project.getId());
+        // in order to create a project with same project code after delete, above statement is implemented
         projectRepository.save(project);
 
         taskService.deleteByProject(mapperUtil.convert(project, new ProjectDTO()));
     }
 
     @Override
-    public void complete(String projectCode) {
+    public ProjectDTO complete(String projectCode) throws TicketingProjectException {
         Project project = projectRepository.findByProjectCode(projectCode);
+        if (project == null){
+            throw new TicketingProjectException("Project does not exist!");
+        }
         project.setProjectStatus(Status.COMPLETE);
         projectRepository.save(project);
+
+        return mapperUtil.convert(project, new ProjectDTO());
+
     }
 
     @Override

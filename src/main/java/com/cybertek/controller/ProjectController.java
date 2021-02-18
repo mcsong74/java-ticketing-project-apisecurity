@@ -5,6 +5,7 @@ import com.cybertek.converter.UserDtoConverter;
 import com.cybertek.dto.ProjectDTO;
 import com.cybertek.dto.TaskDTO;
 import com.cybertek.dto.UserDTO;
+import com.cybertek.entity.Project;
 import com.cybertek.entity.ResponseWrapper;
 import com.cybertek.enums.Status;
 import com.cybertek.exception.TicketingProjectException;
@@ -66,9 +67,32 @@ public class ProjectController {
         return ResponseEntity.ok(new ResponseWrapper("Project is retrieved", projectDTO));
     }
 
+    @PutMapping
+    @Operation(summary = "Update a project")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong Updating project, try again!")
+    @PreAuthorize("hasAnyAuthority('Admin',  'Manager')")
+    public ResponseEntity<ResponseWrapper> update(@RequestBody ProjectDTO projectDTO) throws TicketingProjectException {
+        ProjectDTO updatedProject = projectService.update(projectDTO);
+        return ResponseEntity.ok(new ResponseWrapper("Project is updated", updatedProject));
+    }
 
+    @DeleteMapping("/{projectcode}")
+    @Operation(summary = "Delete a project")
+    @DefaultExceptionMessage(defaultMessage = "Failed to delete the project, try again!")
+    @PreAuthorize("hasAnyAuthority('Admin',  'Manager')")
+    public ResponseEntity<ResponseWrapper> delete(@PathVariable("projectcode") String projectcode) throws TicketingProjectException {
+         projectService.delete(projectcode);
+        return ResponseEntity.ok(new ResponseWrapper("Project is deleted"));
+    }
 
-
+    @PutMapping("/complete/{projectcode}")
+    @Operation(summary = "Complete a project by project code")
+    @DefaultExceptionMessage(defaultMessage = "Failed to Complete the project, try again!")
+    @PreAuthorize("hasAuthority('Manager')")
+    public ResponseEntity<ResponseWrapper> complete(@PathVariable("projectcode") String projectcode) throws TicketingProjectException {
+        ProjectDTO projectDTO= projectService.complete(projectcode);
+        return ResponseEntity.ok(new ResponseWrapper("Project is completed", projectDTO));
+    }
 
 
 //    @GetMapping("/create")
