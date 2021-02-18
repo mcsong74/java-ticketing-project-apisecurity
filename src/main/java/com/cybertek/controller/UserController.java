@@ -83,15 +83,24 @@ public class UserController {
     @PutMapping
     @DefaultExceptionMessage(defaultMessage = "Something went wrong updating user profile, try again!")
     @Operation(summary = "Update User")
-    public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user){
+    public ResponseEntity<ResponseWrapper> updateUser(@RequestBody UserDTO user) throws TicketingProjectException {
         UserDTO updatedUser = userService.update(user);
-
         return ResponseEntity.ok(new ResponseWrapper("Successfully user updated!", updatedUser));
+    }
+
+    @DeleteMapping("/{username}")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong deleting user profile, try again!")
+    @Operation(summary = "Delete User")
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<ResponseWrapper> deleteUser(@PathVariable("username") String username) throws TicketingProjectException {
+        userService.delete(username);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully user deleted!"));
+
     }
 
 
 
-
+/*-----------------------------------------------------------------------------------------------------------*/
     private MailDTO createEmail(UserDTO userDTO){
         User user = mapperUtil.convert(userDTO, new User());
         ConfirmationToken confirmationToken = new ConfirmationToken(user);
