@@ -18,9 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -44,7 +47,8 @@ public class UserController {
     @DefaultExceptionMessage(defaultMessage = "Something went wrong in email confirmation, try again!")
     @PostMapping("/create-user")
     @Operation(summary = "Create new account")
-    private ResponseEntity<ResponseWrapper> doRegister(@RequestBody UserDTO userDTO) throws TicketingProjectException {
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<ResponseWrapper> doRegister(@RequestBody UserDTO userDTO) throws TicketingProjectException {
 
         UserDTO createUser =userService.save(userDTO);
 
@@ -53,6 +57,24 @@ public class UserController {
         return ResponseEntity.ok(new ResponseWrapper("User has been created", createUser));
 
     }
+
+    @GetMapping
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong in retrieving all users, try again!")
+    @Operation(summary = "Read All Users")
+    @PreAuthorize("hasAuthority('Admin')")
+    public ResponseEntity<ResponseWrapper> readAll(){
+        //business logic - data (model)
+        List<UserDTO> result = userService.listAllUsers();
+        //bind it to view
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved users", result));
+
+    }
+
+
+
+
+
+
 
     private MailDTO createEmail(UserDTO userDTO){
         User user = mapperUtil.convert(userDTO, new User());
