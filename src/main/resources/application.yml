@@ -12,7 +12,7 @@ spring:
     username: postgres
     password: 12345
     driver-class-name: org.postgresql.Driver
-    initialization-mode: always
+#    initialization-mode: always
     data: classpath:data.sql
   jpa:
     properties:
@@ -20,7 +20,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: false
 
 #    Email - begins
