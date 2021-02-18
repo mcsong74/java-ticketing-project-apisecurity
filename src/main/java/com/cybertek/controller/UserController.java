@@ -98,7 +98,14 @@ public class UserController {
 
     }
 
-
+    @GetMapping("/role")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong read user profile by role, try again!")
+    @Operation(summary = "Read Users by Role")
+    @PreAuthorize("hasAnyAuthority('Admin', 'Manager')")
+    public ResponseEntity<ResponseWrapper> readByRole(@RequestParam String role){
+        List<UserDTO> userDTOList = userService.listAllByRole(role);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully read users by role ["+ role +"]!", userDTOList));
+    }
 
 /*-----------------------------------------------------------------------------------------------------------*/
     private MailDTO createEmail(UserDTO userDTO){
