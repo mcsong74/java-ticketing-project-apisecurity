@@ -66,11 +66,19 @@ public class UserController {
         //business logic - data (model)
         List<UserDTO> result = userService.listAllUsers();
         //bind it to view
-        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved users", result));
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved users!", result));
 
     }
 
+    @GetMapping("/{username}")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong, try again!")
+    @Operation(summary = "Read a User")
+    //only admin should see other profiles or current user can see his/her profile
+    public ResponseEntity<ResponseWrapper> readByUserName(@PathVariable("username") String username){
+        UserDTO user = userService.findByUserName(username);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved user!", user));
 
+    }
 
 
 
