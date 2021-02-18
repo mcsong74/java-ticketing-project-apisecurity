@@ -10,6 +10,7 @@ import com.cybertek.mapper.MapperUtil;
 import com.cybertek.mapper.ProjectMapper;
 import com.cybertek.mapper.UserMapper;
 import com.cybertek.repository.ProjectRepository;
+import com.cybertek.repository.UserRepository;
 import com.cybertek.service.ProjectService;
 import com.cybertek.service.TaskService;
 import com.cybertek.service.UserService;
@@ -27,12 +28,14 @@ public class ProjectServiceImpl implements ProjectService {
     private UserService userService;
     private TaskService taskService;
     private MapperUtil mapperUtil;
+    private UserRepository userRepository;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserService userService, TaskService taskService, MapperUtil mapperUtil) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserService userService, TaskService taskService, MapperUtil mapperUtil, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.taskService = taskService;
         this.mapperUtil = mapperUtil;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -104,21 +107,25 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectDTO> listAllProjectDetails() {
+    public List<ProjectDTO> listAllProjectDetails() throws TicketingProjectException {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDTO currentUserDTO = userService.findByUserName(username);
-        User user = mapperUtil.convert(currentUserDTO, new User());
+        //get user name of authenticated user, return type Strings
+        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long currentId = Long.parseLong(id);
+
+        User user = userRepository.findById(currentId).orElseThrow(
+                ()-> new TicketingProjectException("This manager does not exist!"));
         List<Project> list = projectRepository.findAllByAssignedManager(user);
 
+        if (list.size()==0){
+            throw new TicketingProjectException("This manager does not have any project assigned");
+        }
         return list.stream().map(project -> {
             ProjectDTO obj = mapperUtil.convert(project, new ProjectDTO());
             obj.setUnfinishedTaskCounts(taskService.totalNonCompletedTasks(project.getProjectCode()));
             obj.setCompleteTaskCounts(taskService.totalCompletedTasks(project.getProjectCode()));
             return obj;
         }).collect(Collectors.toList());
-
-
 
     }
 

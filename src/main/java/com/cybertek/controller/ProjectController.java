@@ -94,6 +94,14 @@ public class ProjectController {
         return ResponseEntity.ok(new ResponseWrapper("Project is completed", projectDTO));
     }
 
+    @GetMapping("/details")
+    @Operation(summary = "Read all project details")
+    @DefaultExceptionMessage(defaultMessage = "Failed to read all the project details, try again!")
+    @PreAuthorize("hasAuthority('Manager')")
+    public ResponseEntity<ResponseWrapper> complete() throws TicketingProjectException {
+        List<ProjectDTO> projectDTOList= projectService.listAllProjectDetails();
+        return ResponseEntity.ok(new ResponseWrapper("Projects are completed", projectDTOList));
+    }
 
 //    @GetMapping("/create")
 //    public String createProject(Model model){
