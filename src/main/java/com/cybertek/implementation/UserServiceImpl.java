@@ -12,10 +12,15 @@ import com.cybertek.service.TaskService;
 import com.cybertek.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,8 +48,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findByUserName(String username) {
+    public UserDTO findByUserName(String username) throws AccessDeniedException {
         User user = userRepository.findByUserName(username);
+        checkForAuthorities(user);
         return mapperUtil.convert(user,new UserDTO());
     }
 
@@ -65,7 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO update(UserDTO dto) throws TicketingProjectException {
+    public UserDTO update(UserDTO dto) throws TicketingProjectException, AccessDeniedException {
 
         //Find current user
         User user = userRepository.findByUserName(dto.getUserName());
@@ -79,6 +85,7 @@ public class UserServiceImpl implements UserService {
         if(!user.getEnabled()){
             throw new TicketingProjectException("User is not confirmed");
         }
+        checkForAuthorities(user);
 
         convertedUser.setEnabled(true);
 
@@ -142,4 +149,21 @@ public class UserServiceImpl implements UserService {
         User confirmedUser = userRepository.save(user);
         return mapperUtil.convert(confirmedUser, new UserDTO());
     }
+
+    private void checkForAuthorities(User user) throws AccessDeniedException {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication != null && !authentication.getName().equals("anonymousUser")){
+            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+
+            //!(logged in user id vs searching user id, if same, ture, otherwise false)
+            if(!(authentication.getName().equals(user.getId().toString()) || !(roles.contains("Admin")))){
+                throw new AccessDeniedException("Access is Denied - Role: "+user.getRole());
+            }
+        }
+
+
+    }
+
+
 }
