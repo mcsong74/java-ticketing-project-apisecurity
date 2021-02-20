@@ -4,6 +4,7 @@ import com.cybertek.annotation.DefaultExceptionMessage;
 import com.cybertek.dto.TaskDTO;
 import com.cybertek.entity.ResponseWrapper;
 import com.cybertek.enums.Status;
+import com.cybertek.exception.TicketingProjectException;
 import com.cybertek.service.ProjectService;
 import com.cybertek.service.TaskService;
 import com.cybertek.service.UserService;
@@ -46,7 +47,7 @@ public class TaskController {
     @DefaultExceptionMessage(defaultMessage = "Something went wrong to retrieve all task, please try again!")
     @Operation(summary = "Read all tasks")
     @PreAuthorize("hasAuthority('Manager')")
-    public ResponseEntity<ResponseWrapper> readAllByProjectManager(){
+    public ResponseEntity<ResponseWrapper> readAllByProjectManager() throws TicketingProjectException {
         List<TaskDTO> taskList = taskService.listAllTasksByProjectManager();
         return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved task by project manager",
                 taskList));
