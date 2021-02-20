@@ -75,6 +75,11 @@ public class UserServiceImpl implements UserService {
         //Map update user dto to entity object
         User convertedUser = mapperUtil.convert(dto,new User());
         convertedUser.setPassWord(passwordEncoder.encode(convertedUser.getPassWord()));
+
+        if(!user.getEnabled()){
+            throw new TicketingProjectException("User is not confirmed");
+        }
+
         convertedUser.setEnabled(true);
 
         //set id to the converted object

@@ -107,7 +107,10 @@ public class TaskController {
 
     }
 
-
+    @PutMapping("/employee/update")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to update task status")
+    @Operation(summary = "Update task status")
+    @PreAuthorize("hasAuthority('Employee')")
     public ResponseEntity<ResponseWrapper> employeeUpdateTask(@RequestBody TaskDTO taskDTO) throws TicketingProjectException {
         TaskDTO task = taskService.updateStatus(taskDTO);
         return ResponseEntity.ok(new ResponseWrapper("Successfully employee task status updated", task));
