@@ -95,8 +95,25 @@ public class TaskController {
         return ResponseEntity.ok(new ResponseWrapper("Successfully updated task", updatedTask));
     }
 
+    @GetMapping("/employee")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to read all non completed task for the employee")
+    @Operation(summary = "Read all non completed task")
+    @PreAuthorize("hasAuthority('Employee')")
+    public ResponseEntity<ResponseWrapper> employeeReadAllNonCompletedTask() throws TicketingProjectException {
+        List<TaskDTO> taskList = taskService.listAllTasksByStatusIsNot(Status.COMPLETE);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully read non completed current user tasks", taskList));
 
-    //    TaskService taskService;
+    }
+
+
+    public ResponseEntity<ResponseWrapper> employeeUpdateTask(@RequestBody TaskDTO taskDTO) throws TicketingProjectException {
+        TaskDTO task = taskService.updateStatus(taskDTO);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully employee task status updated", task));
+    }
+
+
+
+//    TaskService taskService;
 //    ProjectService projectService;
 //    UserService userService;
 //

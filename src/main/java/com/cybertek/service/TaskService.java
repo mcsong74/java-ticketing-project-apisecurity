@@ -24,11 +24,11 @@ public interface TaskService {
 
     List<TaskDTO> listAllByProject(ProjectDTO project);
 
-    List<TaskDTO> listAllTasksByStatusIsNot(Status status);
+    List<TaskDTO> listAllTasksByStatusIsNot(Status status) throws TicketingProjectException;
 
     List<TaskDTO> listAllTasksByProjectManager() throws TicketingProjectException;
 
-    void updateStatus(TaskDTO dto);
+    TaskDTO updateStatus(TaskDTO dto) throws TicketingProjectException;
 
     List<TaskDTO> listAllTasksByStatus(Status status);
 
