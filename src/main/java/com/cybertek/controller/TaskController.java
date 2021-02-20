@@ -9,6 +9,7 @@ import com.cybertek.service.ProjectService;
 import com.cybertek.service.TaskService;
 import com.cybertek.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.graalvm.compiler.word.Word;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/task")
+@Tag(name = "Task Controller", description = "Task API")
 public class TaskController {
 
     private TaskService taskService;
