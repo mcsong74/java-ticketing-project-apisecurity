@@ -44,8 +44,9 @@ public class TaskController {
     }
 
     @GetMapping("/project-manager") //spring security has metadata user logged in, so no need path variable
-    @DefaultExceptionMessage(defaultMessage = "Something went wrong to retrieve all task, please try again!")
-    @Operation(summary = "Read all tasks")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to retrieve all task by project manager, please " +
+            "try again!")
+    @Operation(summary = "Read all task by project manager")
     @PreAuthorize("hasAuthority('Manager')")
     public ResponseEntity<ResponseWrapper> readAllByProjectManager() throws TicketingProjectException {
         List<TaskDTO> taskList = taskService.listAllTasksByProjectManager();
@@ -53,6 +54,15 @@ public class TaskController {
                 taskList));
     }
 
+    @GetMapping("/{id}") //spring security has metadata user logged in, so no need path variable
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to retrieve a task by task id, please " +
+            "try again!")
+    @Operation(summary = "Read a task by task id")
+    @PreAuthorize("hasAnyAuthority('Manager', 'Employee')")
+    public ResponseEntity<ResponseWrapper> readById(@PathVariable("id") Long id) throws TicketingProjectException {
+        TaskDTO currentTask = taskService.findById(id);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved the task by task id", currentTask));
+    }
 
     //    TaskService taskService;
 //    ProjectService projectService;

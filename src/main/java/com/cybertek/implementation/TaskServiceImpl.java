@@ -39,9 +39,6 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO findById(Long id) throws TicketingProjectException {
         Task task = taskRepository.findById(id).orElseThrow(()-> new TicketingProjectException("Task does " +
                 "not exists"));
-//        if(task.isPresent()){
-//            return mapperUtil.convert(task.get(), new TaskDTO());
-//        }
         return mapperUtil.convert(task, new TaskDTO());
     }
 
