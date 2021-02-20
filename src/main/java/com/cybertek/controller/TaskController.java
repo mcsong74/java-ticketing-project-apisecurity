@@ -54,7 +54,7 @@ public class TaskController {
                 taskList));
     }
 
-    @GetMapping("/{id}") //spring security has metadata user logged in, so no need path variable
+    @GetMapping("/{id}")
     @DefaultExceptionMessage(defaultMessage = "Something went wrong to retrieve a task by task id, please " +
             "try again!")
     @Operation(summary = "Read a task by task id")
@@ -63,6 +63,22 @@ public class TaskController {
         TaskDTO currentTask = taskService.findById(id);
         return ResponseEntity.ok(new ResponseWrapper("Successfully retrieved the task by task id", currentTask));
     }
+
+
+    @PostMapping
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to create a new task, please " +
+            "try again!")
+    @Operation(summary = "Create a new task")
+    @PreAuthorize("hasAuthority('Manager')")
+    public ResponseEntity<ResponseWrapper> create(@RequestBody TaskDTO taskDTO){
+        TaskDTO createdTask = taskService.save(taskDTO);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully created a new task!", createdTask));
+    }
+
+
+
+
+
 
     //    TaskService taskService;
 //    ProjectService projectService;
