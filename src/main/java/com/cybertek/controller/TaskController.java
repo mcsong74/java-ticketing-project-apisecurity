@@ -75,9 +75,25 @@ public class TaskController {
         return ResponseEntity.ok(new ResponseWrapper("Successfully created a new task!", createdTask));
     }
 
+    @DeleteMapping("/{id}")
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to delete a task, please " +
+            "try again!")
+    @Operation(summary = "Delete a task")
+    @PreAuthorize("hasAuthority('Manager')")
+    public ResponseEntity<ResponseWrapper> delete(@PathVariable("id") Long id) throws TicketingProjectException {
+        taskService.delete(id);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully task deleted"));
+    }
 
-
-
+    @PutMapping
+    @DefaultExceptionMessage(defaultMessage = "Something went wrong to update a new task, please " +
+            "try again!")
+    @Operation(summary = "Update a new task")
+    @PreAuthorize("hasAuthority('Manager')")
+    public ResponseEntity<ResponseWrapper> updateTask(@RequestBody TaskDTO taskDTO) throws TicketingProjectException {
+        TaskDTO updatedTask = taskService.update(taskDTO);
+        return ResponseEntity.ok(new ResponseWrapper("Successfully updated task", updatedTask));
+    }
 
 
     //    TaskService taskService;

@@ -59,25 +59,31 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void update(TaskDTO dto) {
-        Optional<Task> task = taskRepository.findById(dto.getId());
-        Task convertedTask = taskMapper.convertToEntity(dto);
+    public TaskDTO update(TaskDTO dto) throws TicketingProjectException {
+        //check the task to update exists in the db
+        taskRepository.findById(dto.getId()).orElseThrow(() -> new TicketingProjectException("Task does " +
+                "not exists"));
+        //convert task dto to task entity
+        Task convertedTask = mapperUtil.convert(dto, new Task());
 
-        if(task.isPresent()){
-            convertedTask.setId(task.get().getId());
-            convertedTask.setTaskStatus(task.get().getTaskStatus());
-            convertedTask.setAssignedDate(task.get().getAssignedDate());
-            taskRepository.save(convertedTask);
-        }
+        //below highlighted will be handled in request body
+//        convertedTask.setId(task.getId());
+//        convertedTask.setTaskStatus(task.getTaskStatus());
+//        convertedTask.setAssignedDate(task.getAssignedDate());
+
+        //save the converted task entity to db and return the task
+        Task savedTask = taskRepository.save(convertedTask);
+        //return the task dto using mapperUtil.convert
+        return mapperUtil.convert(savedTask, new TaskDTO());
+
     }
 
     @Override
-    public void delete(long id) {
-        Optional<Task> foundTask =  taskRepository.findById(id);
-        if(foundTask.isPresent()){
-            foundTask.get().setIsDeleted(true);
-            taskRepository.save(foundTask.get());
-        }
+    public void delete(long id) throws TicketingProjectException {
+        Task foundTask = taskRepository.findById(id).orElseThrow(() -> new TicketingProjectException("Task does not " +
+                "exists"));
+        foundTask.setIsDeleted(true);
+        taskRepository.save(foundTask);
     }
 
     @Override
