@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @Setter
 @Where(clause = "is_deleted=false")
 @JsonIgnoreProperties(value = {"hiberanteLazyinitializer"}, ignoreUnknown = true)
-@ToString
 public class Project extends BaseEntity {
 
     @Column(unique = true)

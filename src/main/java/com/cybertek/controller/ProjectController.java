@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/project")
 @Tag(name = "Project Controller", description = "Project API")
-@ToString
 public class ProjectController {
 
 
