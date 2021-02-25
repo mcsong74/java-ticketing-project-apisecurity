@@ -13,6 +13,7 @@ import com.cybertek.service.ProjectService;
 import com.cybertek.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.ToString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/v1/project")
 @Tag(name = "Project Controller", description = "Project API")
+@ToString
 public class ProjectController {
 
 

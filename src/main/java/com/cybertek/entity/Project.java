@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @Setter
 @Where(clause = "is_deleted=false")
 @JsonIgnoreProperties(value = {"hiberanteLazyinitializer"}, ignoreUnknown = true)
+@ToString
 public class Project extends BaseEntity {
 
     @Column(unique = true)
