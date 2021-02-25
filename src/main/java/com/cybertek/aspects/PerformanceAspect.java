@@ -28,7 +28,7 @@ public class PerformanceAspect {
         }
         Long afterTime = System.currentTimeMillis();
         logger.info("Time taken to execute: {} ms (Method: {} - parameters: {}", (afterTime-beforeTime),
-                proceedingJoinPoint.getSignature().toShortString(), proceedingJoinPoint.getArgs().toString());
+                proceedingJoinPoint.getSignature().toShortString(), proceedingJoinPoint.getArgs());
         return result;
     }
 

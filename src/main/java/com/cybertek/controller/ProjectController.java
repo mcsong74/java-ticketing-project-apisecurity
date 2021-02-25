@@ -50,7 +50,7 @@ public class ProjectController {
         return ResponseEntity.ok(new ResponseWrapper("All projects are retrieved", projectDTOList));
     }
 
-    @GetMapping("/{projectcoe}")
+    @GetMapping("/{projectcode}")
     @Operation(summary = "Read projects by project code")
     @DefaultExceptionMessage(defaultMessage = "Something went wrong getting project by project code, try again!")
     @PreAuthorize("hasAnyAuthority('Admin',  'Manager')")
