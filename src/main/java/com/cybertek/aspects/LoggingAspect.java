@@ -1,5 +1,6 @@
 package com.cybertek.aspects;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.slf4j.Logger;
@@ -11,9 +12,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Aspect
 @Configuration
+@Slf4j
 public class LoggingAspect {
 
-    Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+//    Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 
     @Pointcut("execution(* com.cybertek.controller.ProjectController.*(..)) || execution(* com.cybertek.controller" +
             ".TaskController.*(..))")
@@ -21,20 +23,20 @@ public class LoggingAspect {
     @Before("anyControllerOperation()")
     public void anyBeforeControllerOperationAdvice(JoinPoint joinPoint){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        logger.info("Before(User: {}, Method: {} - Parameters: {}", auth.getName(), joinPoint.getSignature(),
+        log.info("Before(User: {}, Method: {} - Parameters: {}", auth.getName(), joinPoint.getSignature(),
                 joinPoint.getArgs().toString());
     }
     @AfterReturning(pointcut = "anyControllerOperation()", returning = "results")
     public void anyAfterReturningControllerOperation(JoinPoint joinPoint, Object results){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        logger.info("AfterReturning(User: {} Method: {} - Results: {}", auth.getName(),
+        log.info("AfterReturning(User: {} Method: {} - Results: {}", auth.getName(),
                 joinPoint.getSignature().toShortString(), results.toString());
     }
 
     @AfterThrowing(pointcut = "anyControllerOperation()", throwing = "exception")
     public void anyAfterThrowingControllerOperationAdvice(JoinPoint joinPoint, RuntimeException exception){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        logger.info("After Throwing(User: {} Method: {} - Exception: {}", auth.getName(),
+        log.info("After Throwing(User: {} Method: {} - Exception: {}", auth.getName(),
                 joinPoint.getSignature().toShortString(), exception.getLocalizedMessage());
     }
 
